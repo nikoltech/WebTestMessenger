@@ -55,7 +55,8 @@ namespace WebTestMessenger.DataAccess.Repositories
         {
             try
             {
-                List<User> users = await this.context.Users.ToListAsync();
+                List<User> users = await this.context.Users.
+                    Include(u => u.Messages).ToListAsync();
 
                 var result = from user in users
                         select (user.Login, user.Messages?.Count ?? 0);
@@ -68,16 +69,16 @@ namespace WebTestMessenger.DataAccess.Repositories
             }
         }
 
-        public async Task<bool> SendMessageAsync(Message message, int userId, int recipientUserId)
+        public async Task<bool> SendMessageAsync(Message message, int userId, int userIdTo)
         {
             message = message ?? throw new ArgumentNullException(nameof(message));
 
             try
             {
-                User recipient = await this.context.Users.Where(u => u.Id == recipientUserId).FirstOrDefaultAsync();
+                User recipient = await this.context.Users.Where(u => u.Id == userIdTo).FirstOrDefaultAsync();
                 if (recipient == null)
                 {
-                    throw new Exception($"User with id {recipientUserId} not found!");
+                    throw new Exception($"User with id {userIdTo} not found!");
                 }
 
                 Message existMessage = await this.context.Messages.Where(m => m.Id == message.Id).FirstOrDefaultAsync();

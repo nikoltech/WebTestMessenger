@@ -78,13 +78,13 @@
             }
         }
 
-        public async Task<bool> SendMessageAsync(MessageModel messageModel, int userId, int recipientUserId)
+        public async Task<bool> SendMessageAsync(MessageModel messageModel, int userId, int userIdTo)
         {
             try 
             {
                 messageModel = messageModel ?? throw new ArgumentNullException(nameof(messageModel));
 
-                return await this.repo.SendMessageAsync(messageModel.ToEntity(), userId, recipientUserId);
+                return await this.repo.SendMessageAsync(messageModel.ToEntity(), userId, userIdTo);
             }
             catch
             {

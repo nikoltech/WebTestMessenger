@@ -9,7 +9,7 @@
         #region Message
         Task<bool> DeleteMessageAsync(int messageId, int userId);
 
-        Task<bool> SendMessageAsync(Message message, int userId, int recipientUserId);
+        Task<bool> SendMessageAsync(Message message, int userId, int userIdTo);
 
         Task<IList<(string, int)>> GetUsersListAsync();
 

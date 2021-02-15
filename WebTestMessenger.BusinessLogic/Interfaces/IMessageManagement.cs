@@ -12,7 +12,7 @@
 
         Task<IList<(string, int)>> GetUsersListAsync();
 
-        Task<bool> SendMessageAsync(MessageModel messageModel, int userId, int recipientUserId);
+        Task<bool> SendMessageAsync(MessageModel messageModel, int userId, int userIdTo);
 
         Task<bool> DeleteMessageAsync(int messageId, int userId);
     }

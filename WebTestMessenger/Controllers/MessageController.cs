@@ -27,7 +27,7 @@
         }
 
         // get messages for you
-        [HttpGet("GetMessages")]
+        [HttpGet("List")]
         public async Task<IActionResult> GetMessagesAsync()
         {
             try
@@ -43,8 +43,8 @@
         }
 
         // get own messages
-        [HttpGet("GetOwnMessages")]
-        public async Task<IActionResult> GetOwnMessagesAsync()
+        [HttpGet("MyList")]
+        public async Task<IActionResult> GetMyMessagesAsync()
         {
             try
             {
@@ -81,8 +81,8 @@
         }
 
         // send message for user
-        [HttpPost("SendMessage")]
-        public async Task<IActionResult> SendMessageAsync([FromBody] MessageModel messageModel, [FromBody] int recipientUserId)
+        [HttpPost("Send/{userIdTo}")]
+        public async Task<IActionResult> SendMessageAsync([FromBody] MessageModel messageModel, int userIdTo)
         {
             if (!this.ModelState.IsValid)
             {
@@ -91,7 +91,7 @@
 
             try
             {
-                var result = await this.messageManagement.SendMessageAsync(messageModel, this.UserId, recipientUserId).ConfigureAwait(false);
+                var result = await this.messageManagement.SendMessageAsync(messageModel, this.UserId, userIdTo).ConfigureAwait(false);
 
                 return this.Ok(result);
             }
@@ -102,8 +102,8 @@
         }
 
         // delete message if you send it
-        [HttpDelete("DeleteMessage/{id}")]
-        public async Task<IActionResult> DeleteMessageAsync(int id)
+        [HttpDelete("Remove/{id}")]
+        public async Task<IActionResult> RemoveMessageAsync(int id)
         {
             try
             {
