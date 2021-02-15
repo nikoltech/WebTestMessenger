@@ -81,7 +81,7 @@ namespace WebTestMessenger
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Car}/{action=Index}/{id?}");
+                    pattern: "{controller=Message}/{action=Index}/{id?}");
             });
         }
     }

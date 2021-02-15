@@ -4,11 +4,5 @@
 
     public partial class DataContext
     {
-        public DataContext(DbContextOptions<DataContext> options)
-            : base(options)
-        {
-        }
-
-
     }
 }

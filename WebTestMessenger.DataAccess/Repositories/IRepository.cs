@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WebTestMessenger.DataAccess.Repositories
+﻿namespace WebTestMessenger.DataAccess.Repositories
 {
+    using System.Threading.Tasks;
+    using WebTestMessenger.DataAccess.Entities;
+
     public interface IRepository
     {
+        Task<User> GetUserAsync(string login, string password);
     }
 }
