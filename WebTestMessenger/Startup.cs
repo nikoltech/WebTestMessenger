@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -5,14 +6,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.IdentityModel.Tokens;
 using WebTestMessenger.BusinessLogic.Interfaces;
 using WebTestMessenger.BusinessLogic.Managements;
 using WebTestMessenger.DataAccess;
 using WebTestMessenger.DataAccess.Repositories;
+using WebTestMessenger.Infrastructure;
 
 namespace WebTestMessenger
 {
@@ -36,6 +35,26 @@ namespace WebTestMessenger
         {
             services.AddDbContext<DataContext>(options =>
               options.UseSqlServer(this.Configuration["Data:ConnectionString"], options => options.MigrationsAssembly("WebTestMessenger")));
+
+            //Auth
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = AuthOptions.ISSUER,
+
+                    ValidateAudience = true,
+                    ValidAudience = AuthOptions.AUDIENCE,
+
+                    ValidateLifetime = true,
+
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey()
+                };
+            });
 
             // Resolve dependencies
             services.AddScoped<IMessageManagement, MessageManagement>();
