@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -8,6 +9,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebTestMessenger.BusinessLogic.Interfaces;
+using WebTestMessenger.BusinessLogic.Managements;
+using WebTestMessenger.DataAccess;
 
 namespace WebTestMessenger
 {
@@ -29,8 +33,12 @@ namespace WebTestMessenger
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddDbContext<DataContext>(options =>
-            //  options.UseSqlServer(this.Configuration["Data:ConnectionString"], options => options.MigrationsAssembly("VisitCardApp")));
+            services.AddDbContext<DataContext>(options =>
+              options.UseSqlServer(this.Configuration["Data:ConnectionString"], options => options.MigrationsAssembly("WebTestMessenger")));
+
+            // Resolve dependencies
+            services.AddScoped<IMessageManagement, MessageManagement>();
+
 
             services.AddControllers();
         }
