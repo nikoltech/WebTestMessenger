@@ -97,11 +97,11 @@
         /// </summary>
         /// <param name="messageId"></param>
         /// <returns></returns>
-        public async Task<bool> DeleteMessageAsync(int messageId)
+        public async Task<bool> DeleteMessageAsync(int messageId, int userId)
         {
             try
             {
-                return await this.repo.DeleteMessageAsync(messageId).ConfigureAwait(false);
+                return await this.repo.DeleteMessageAsync(messageId, userId).ConfigureAwait(false);
             }
             catch
             {

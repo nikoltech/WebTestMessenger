@@ -109,11 +109,11 @@ namespace WebTestMessenger.DataAccess.Repositories
         /// </summary>
         /// <param name="messageId"></param>
         /// <returns></returns>
-        public async Task<bool> DeleteMessageAsync(int messageId)
+        public async Task<bool> DeleteMessageAsync(int messageId, int userId)
         {
             try
             {
-                Message existMessage = await this.context.Messages.Where(m => m.Id == messageId).FirstOrDefaultAsync();
+                Message existMessage = await this.context.Messages.Where(m => m.Id == messageId && m.UserId == userId).FirstOrDefaultAsync();
                 if (existMessage == null)
                 {
                     throw new Exception($"Message with id {messageId} not found!");

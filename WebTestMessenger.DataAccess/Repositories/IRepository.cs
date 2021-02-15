@@ -7,7 +7,7 @@
     public interface IRepository
     {
         #region Message
-        Task<bool> DeleteMessageAsync(int messageId);
+        Task<bool> DeleteMessageAsync(int messageId, int userId);
 
         Task<bool> SendMessageAsync(Message message, int userId, int recipientUserId);
 
