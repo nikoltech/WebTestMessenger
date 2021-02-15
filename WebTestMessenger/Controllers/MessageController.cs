@@ -3,6 +3,7 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using WebTestMessenger.BusinessLogic.Interfaces;
     using WebTestMessenger.BusinessLogic.Models;
@@ -63,9 +64,15 @@
         {
             try
             {
-                var result = await this.messageManagement.GetUsersListAsync().ConfigureAwait(false);
+                IList<(string, int)> result = await this.messageManagement.GetUsersListAsync().ConfigureAwait(false);
 
-                return this.Ok(result);
+                List<object> resultList = new List<object>();
+                foreach (var item in result)
+                {
+                    resultList.Add(new { user = item.Item1, Messages = item.Item2 });
+                }
+
+                return this.Ok(resultList);
             }
             catch (Exception ex)
             {
