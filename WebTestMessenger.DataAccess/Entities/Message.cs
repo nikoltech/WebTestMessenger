@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace WebTestMessenger.DataAccess.Entities
@@ -20,5 +21,14 @@ namespace WebTestMessenger.DataAccess.Entities
         public int UserId { get; set; }
 
         public User User { get; set; }
+
+        [NotMapped]
+        public bool IsReceived 
+        {
+            get
+            {
+                return UserIdFrom != 0;
+            }
+        }
     }
 }

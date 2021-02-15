@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebTestMessenger.DataAccess.Entities;
@@ -15,6 +16,125 @@ namespace WebTestMessenger.DataAccess.Repositories
         {
             this.context = context;
         }
+
+        #region Message
+
+        /// <summary>
+        /// get received messages
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>List<Message></returns>
+        public async Task<List<Message>> GetMessagesAsync(int userId)
+        {
+            try
+            {
+                return await this.context.Messages.Where(m => m.UserId == userId && m.UserIdFrom != 0).ToListAsync();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<Message>> GetOwnMessagesAsync(int userId)
+        {
+            try
+            {
+                return await this.context.Messages.Where(m => m.UserId == userId && m.UserIdFrom == 0).ToListAsync();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        ///  get list of users with count of messages
+        /// </summary>
+        public async Task<IEnumerable<(string, int)>> GetUsersList()
+        {
+            try
+            {
+                List<User> users = await this.context.Users.ToListAsync();
+
+                var result = from user in users
+                        select (user.Login, user.Messages.Count);
+
+                return result;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> SendMessageAsync(Message message, int userId, int recipientUserId)
+        {
+            message = message ?? throw new ArgumentNullException(nameof(message));
+
+            try
+            {
+                User recipient = await this.context.Users.Where(u => u.Id == recipientUserId).FirstOrDefaultAsync();
+                if (recipient == null)
+                {
+                    throw new Exception($"User with id {recipientUserId} not found!");
+                }
+
+                Message existMessage = await this.context.Messages.Where(m => m.Id == message.Id).FirstOrDefaultAsync();
+                if (existMessage == null)
+                {
+                    Message msg = new Message
+                    {
+                        Text = message.Text,
+                        UserId = userId,
+                        IsSend = true
+                    };
+                    this.context.Messages.Add(msg);
+                }
+
+                message.UserIdFrom = userId;
+                message.User = recipient;
+                this.context.Messages.Add(message);
+
+                return await this.context.SaveChangesAsync() > 0;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// delete message if you send it
+        /// </summary>
+        /// <param name="messageId"></param>
+        /// <returns></returns>
+        public async Task<bool> DeleteMessage(int messageId)
+        {
+            try
+            {
+                Message existMessage = await this.context.Messages.Where(m => m.Id == messageId).FirstOrDefaultAsync();
+                if (existMessage == null)
+                {
+                    throw new Exception($"Message with id {messageId} not found!");
+                }
+
+                if (!existMessage.IsSend)
+                {
+                    throw new Exception($"Message must be sended before deletion!");
+                }
+
+                this.context.Remove(existMessage);
+
+                return await this.context.SaveChangesAsync() > 0;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        #endregion
+
 
         public async Task<User> GetUserAsync(string login, string password)
         {

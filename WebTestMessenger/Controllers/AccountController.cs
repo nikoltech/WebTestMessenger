@@ -24,7 +24,7 @@ namespace WebTestMessenger.Controllers
         [HttpPost("/token")]
         public async Task<IActionResult> TokenAsync(string username, string password)
         {
-            var identity = await GetIdentity(username, password).ConfigureAwait(false);
+            var identity = await this.GetIdentity(username, password).ConfigureAwait(false);
             if (identity == null)
             {
                 return BadRequest(new { errorText = "Invalid username or password." });
@@ -58,7 +58,8 @@ namespace WebTestMessenger.Controllers
             {
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimsIdentity.DefaultNameClaimType, user.Login)
+                    new Claim(ClaimsIdentity.DefaultNameClaimType, user.Login),
+                    new Claim("UserId", user.Id.ToString()),
                 };
                 ClaimsIdentity claimsIdentity =
                 new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
