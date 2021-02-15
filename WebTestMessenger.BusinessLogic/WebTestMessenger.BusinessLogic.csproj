@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
+    <ProjectReference Include="..\WebTestMessenger.DataAccess\WebTestMessenger.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>

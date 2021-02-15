@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using WebTestMessenger.BusinessLogic.Interfaces;
 using WebTestMessenger.BusinessLogic.Managements;
 using WebTestMessenger.DataAccess;
+using WebTestMessenger.DataAccess.Repositories;
 
 namespace WebTestMessenger
 {
@@ -38,6 +39,7 @@ namespace WebTestMessenger
 
             // Resolve dependencies
             services.AddScoped<IMessageManagement, MessageManagement>();
+            services.AddScoped<IRepository, Repository>();
 
 
             services.AddControllers();
@@ -52,12 +54,15 @@ namespace WebTestMessenger
 
             app.UseRouting();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.UseSession();
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Car}/{action=Index}/{id?}");
             });
         }
     }
