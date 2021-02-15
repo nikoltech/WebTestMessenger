@@ -51,7 +51,7 @@ namespace WebTestMessenger.DataAccess.Repositories
         /// <summary>
         ///  get list of users with count of messages
         /// </summary>
-        public async Task<IEnumerable<(string, int)>> GetUsersList()
+        public async Task<IList<(string, int)>> GetUsersListAsync()
         {
             try
             {
@@ -60,7 +60,7 @@ namespace WebTestMessenger.DataAccess.Repositories
                 var result = from user in users
                         select (user.Login, user.Messages.Count);
 
-                return result;
+                return result.ToList();
             }
             catch
             {
@@ -109,7 +109,7 @@ namespace WebTestMessenger.DataAccess.Repositories
         /// </summary>
         /// <param name="messageId"></param>
         /// <returns></returns>
-        public async Task<bool> DeleteMessage(int messageId)
+        public async Task<bool> DeleteMessageAsync(int messageId)
         {
             try
             {
@@ -135,6 +135,27 @@ namespace WebTestMessenger.DataAccess.Repositories
         }
         #endregion
 
+        public async Task<User> RegisterAsync(User user)
+        {
+            user = user ?? throw new ArgumentNullException(nameof(user));
+
+            try
+            {
+                User existUsr = await this.context.Users.Where(u => u.Login.Equals(user.Login)).FirstOrDefaultAsync();
+                if (existUsr != null)
+                {
+                    throw new Exception($"User with login {user.Login} already exists!");
+                }
+
+                await this.context.AddAsync(user);
+
+                return user;
+            }
+            catch
+            {
+                throw;
+            }
+        }
 
         public async Task<User> GetUserAsync(string login, string password)
         {

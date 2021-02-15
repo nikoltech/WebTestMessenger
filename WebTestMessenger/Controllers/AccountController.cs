@@ -6,6 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using WebTestMessenger.BusinessLogic.Models;
 using WebTestMessenger.DataAccess.Entities;
 using WebTestMessenger.DataAccess.Repositories;
 using WebTestMessenger.Infrastructure;
@@ -48,6 +49,29 @@ namespace WebTestMessenger.Controllers
             };
 
             return Json(response);
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> RegisterAsync(UserModel model)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.BadRequest(this.ModelState);
+            }
+
+            try
+            {
+                User entity = await this.repo.RegisterAsync(model.ToEntity()).ConfigureAwait(false);
+
+                UserModel resultModel = new UserModel();
+                resultModel.ToModel(entity);
+
+                return this.Ok(resultModel);
+            }
+            catch (Exception ex)
+            {
+                return this.BadRequest(ex.Message);
+            }
         }
 
         #region private methods
