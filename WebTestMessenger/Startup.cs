@@ -38,23 +38,23 @@ namespace WebTestMessenger
 
             //Auth
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.RequireHttpsMetadata = false;
-                options.TokenValidationParameters = new TokenValidationParameters
+                .AddJwtBearer(options =>
                 {
-                    ValidateIssuer = true,
-                    ValidIssuer = AuthOptions.ISSUER,
+                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = AuthOptions.ISSUER,
 
-                    ValidateAudience = true,
-                    ValidAudience = AuthOptions.AUDIENCE,
+                        ValidateAudience = true,
+                        ValidAudience = AuthOptions.AUDIENCE,
 
-                    ValidateLifetime = true,
+                        ValidateLifetime = true,
 
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey()
-                };
-            });
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey()
+                    };
+                });
 
             // Resolve dependencies
             services.AddScoped<IMessageManagement, MessageManagement>();
@@ -75,7 +75,6 @@ namespace WebTestMessenger
 
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

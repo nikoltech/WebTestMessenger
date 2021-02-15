@@ -22,7 +22,7 @@
         [HttpGet("Index")]
         public IActionResult Index()
         {
-            return this.Ok("Works!!!");
+            return this.Ok(this.UserId);
         }
 
         // get messages for you
@@ -75,7 +75,7 @@
 
         // send message for user
         [HttpPost("SendMessage")]
-        public async Task<IActionResult> SendMessageAsync(MessageModel messageModel, int recipientUserId)
+        public async Task<IActionResult> SendMessageAsync([FromBody] MessageModel messageModel, [FromBody] int recipientUserId)
         {
             if (!this.ModelState.IsValid)
             {
@@ -95,12 +95,12 @@
         }
 
         // delete message if you send it
-        [HttpDelete("DeleteMessage")]
-        public async Task<IActionResult> DeleteMessageAsync(int messageId)
+        [HttpDelete("DeleteMessage/{id}")]
+        public async Task<IActionResult> DeleteMessageAsync(int id)
         {
             try
             {
-                var result = await this.messageManagement.DeleteMessageAsync(messageId, this.UserId).ConfigureAwait(false);
+                var result = await this.messageManagement.DeleteMessageAsync(id, this.UserId).ConfigureAwait(false);
 
                 return this.Ok(result);
             }

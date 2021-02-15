@@ -58,7 +58,7 @@ namespace WebTestMessenger.DataAccess.Repositories
                 List<User> users = await this.context.Users.ToListAsync();
 
                 var result = from user in users
-                        select (user.Login, user.Messages.Count);
+                        select (user.Login, user.Messages?.Count ?? 0);
 
                 return result.ToList();
             }
@@ -147,9 +147,14 @@ namespace WebTestMessenger.DataAccess.Repositories
                     throw new Exception($"User with login {user.Login} already exists!");
                 }
 
-                await this.context.AddAsync(user);
+                this.context.Add(user);
 
-                return user;
+                if (await this.context.SaveChangesAsync() > 0)
+                {
+                    return user;
+                }
+
+                throw new Exception("Something got wrong.");
             }
             catch
             {

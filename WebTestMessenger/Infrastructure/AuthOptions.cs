@@ -8,7 +8,7 @@
         public const string ISSUER = "MyAuthServer";
         public const string AUDIENCE = "MyAuthClient"; 
         const string KEY = "mysupersecret_secretkey!027"; 
-        public const int LIFETIME = 1; // 1 минута
+        public const int LIFETIME = 20; // 20 минут
         public static SymmetricSecurityKey GetSymmetricSecurityKey()
         {
             return new SymmetricSecurityKey(Encoding.ASCII.GetBytes(KEY));

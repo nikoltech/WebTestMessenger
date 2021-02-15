@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -22,10 +23,15 @@ namespace WebTestMessenger.Controllers
             this.repo = repository;
         }
 
-        [HttpPost("/token")]
-        public async Task<IActionResult> TokenAsync(string username, string password)
+        public IActionResult Index()
         {
-            var identity = await this.GetIdentity(username, password).ConfigureAwait(false);
+            return this.Ok("Works!!!");
+        }
+
+        [HttpPost("/token")]
+        public async Task<IActionResult> TokenAsync(string login, string password)
+        {
+            var identity = await this.GetIdentity(login, password).ConfigureAwait(false);
             if (identity == null)
             {
                 return BadRequest(new { errorText = "Invalid username or password." });
@@ -52,7 +58,7 @@ namespace WebTestMessenger.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterAsync(UserModel model)
+        public async Task<IActionResult> RegisterAsync([FromBody] UserModel model)
         {
             if (!this.ModelState.IsValid)
             {

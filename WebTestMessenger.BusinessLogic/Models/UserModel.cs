@@ -37,12 +37,15 @@
                 this.Login = entity.Login;
                 this.Password = entity.Password;
 
-                foreach (var msg in entity.Messages)
+                if (entity.Messages != null)
                 {
-                    MessageModel model = new MessageModel();
-                    model.ToModel(msg);
+                    foreach (var msg in entity.Messages)
+                    {
+                        MessageModel model = new MessageModel();
+                        model.ToModel(msg);
 
-                    this.Messages.Add(model);
+                        this.Messages.Add(model);
+                    }
                 }
             }
         }

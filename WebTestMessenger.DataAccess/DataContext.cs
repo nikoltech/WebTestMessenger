@@ -9,6 +9,7 @@ namespace WebTestMessenger.DataAccess
         public DataContext(DbContextOptions<DataContext> options)
             : base(options)
         {
+            Database.EnsureCreated();
         }
 
         public DbSet<Message> Messages { get; set; }
